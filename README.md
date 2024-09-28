@@ -7,19 +7,21 @@
 </ul>
 
 <h2>Keybinds as of 9/28/24</h2>
-Left Stick = turn
-Right Stick = move
-RT = wrist up
-LT = wrist down
-RB = shoot
-LB = floor intake
-Y = top load
-X = set swerve yaw to 0
-A = 180 flip
+Left Stick = turn<br>
+Right Stick = move<br>
+RT = wrist up<br>
+LT = wrist down<br>
+RB = shoot<br>
+LB = floor intake<br>
+Y = top load<br>
+X = set swerve yaw to 0<br>
+A = 180 flip<br>
 
 <h2>Useful Links</h2>
-<a href="https://docs.google.com/document/d/1Zz4CwSUwrkcmWaixhhw2TAhLp6Z7IyciOJ-vBNrFHzI/edit">Original Skeleton Doc</a>
-<a href="https://www.roboconnj.org/participate/first-team">Robocon Event Website</a>
+<ul>
+  <li><a href="https://docs.google.com/document/d/1Zz4CwSUwrkcmWaixhhw2TAhLp6Z7IyciOJ-vBNrFHzI/edit">Original Skeleton Doc</a></li>
+  <li><a href="https://www.roboconnj.org/participate/first-team">Robocon Event Website</a></li>
+</ul>
 
 
 Any questions, just email jadyn.monaco@mcvts.org or moosa.awais@mcvts.org. We'd be happy to help!
