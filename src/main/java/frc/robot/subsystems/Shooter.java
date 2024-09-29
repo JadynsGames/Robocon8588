@@ -30,8 +30,10 @@ public class Shooter extends SubsystemBase {
   public static final int kTopCanId = 25;
 
   // MEASUREMENTS
-  // public static final double kBottomWheelDiameter = Units.inchesToMeters(3.0); // meters
-  // public static final double kTopWheelDiameter    = Units.inchesToMeters(4.0); // meters
+  // public static final double kBottomWheelDiameter = Units.inchesToMeters(3.0);
+  // // meters
+  // public static final double kTopWheelDiameter = Units.inchesToMeters(4.0); //
+  // meters
 
   // ---
   private CANSparkMax m_bottom;
@@ -40,9 +42,11 @@ public class Shooter extends SubsystemBase {
   private RelativeEncoder m_bottomEncoder;
   private RelativeEncoder m_topEncoder;
 
-  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // private final MutableMeasure<Voltage> m_appliedVoltage =
+  // mutable(Volts.of(0));
   // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  // private final MutableMeasure<Velocity<Distance>> m_velocity =
+  // mutable(MetersPerSecond.of(0));
 
   // SysIdRoutine routine;
 
@@ -76,33 +80,33 @@ public class Shooter extends SubsystemBase {
 
     // Creates a SysIdRoutine
     // routine = new SysIdRoutine(
-    //   new SysIdRoutine.Config(),
-    //   new SysIdRoutine.Mechanism(this::voltageShoot,
-    //       log -> {
-    //         log.motor("shoot-top")
-    //           .voltage(
-    //           m_appliedVoltage.mut_replace(
-    //           m_top.get() * RobotController.getBatteryVoltage(), Volts))
-    //             .linearPosition(m_distance.mut_replace(m_top.getEncoder().getPosition(),
-    //             Meters))
-    //           .linearVelocity(
-    //             m_velocity.mut_replace(m_top.getEncoder().getVelocity(), MetersPerSecond));
-    //         log.motor("shoot-bottom")
-    //         .voltage(
-    //         m_appliedVoltage.mut_replace(
-    //         m_bottom.get() * RobotController.getBatteryVoltage(), Volts))
-    //         .linearPosition(m_distance.mut_replace(m_bottom.getEncoder().getPosition(),
-    //         Meters))
-    //         .linearVelocity(
-    //         m_velocity.mut_replace(m_bottom.getEncoder().getVelocity(),
-    //         MetersPerSecond));
-    //       },
-    //       this));
+    // new SysIdRoutine.Config(),
+    // new SysIdRoutine.Mechanism(this::voltageShoot,
+    // log -> {
+    // log.motor("shoot-top")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // m_top.get() * RobotController.getBatteryVoltage(), Volts))
+    // .linearPosition(m_distance.mut_replace(m_top.getEncoder().getPosition(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(m_top.getEncoder().getVelocity(), MetersPerSecond));
+    // log.motor("shoot-bottom")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // m_bottom.get() * RobotController.getBatteryVoltage(), Volts))
+    // .linearPosition(m_distance.mut_replace(m_bottom.getEncoder().getPosition(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(m_bottom.getEncoder().getVelocity(),
+    // MetersPerSecond));
+    // },
+    // this));
   }
 
   // private void voltageShoot(Measure<Voltage> volts) {
-  //   m_bottom.setVoltage(volts.in(Volts));
-  //   m_top.setVoltage(volts.in(Volts));
+  // m_bottom.setVoltage(volts.in(Volts));
+  // m_top.setVoltage(volts.in(Volts));
   // }
 
   // Set the shooter motors to brake
@@ -116,7 +120,7 @@ public class Shooter extends SubsystemBase {
     m_bottom.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m_top.setIdleMode(CANSparkMax.IdleMode.kCoast);
   }
-  
+
   public double getCurrent() {
     return m_top.getOutputCurrent();
   }
@@ -127,7 +131,7 @@ public class Shooter extends SubsystemBase {
     m_bottom.set(speed);
     m_top.set(speed);
   }
-  
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Shooter Top Encoder Position", m_topEncoder.getPosition());
@@ -142,10 +146,10 @@ public class Shooter extends SubsystemBase {
   }
 
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return routine.quasistatic(direction);
+  // return routine.quasistatic(direction);
   // }
 
   // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return routine.dynamic(direction);
+  // return routine.dynamic(direction);
   // }
 }

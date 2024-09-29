@@ -34,7 +34,8 @@ public class Intake extends SubsystemBase {
   // CAN IDs
   public static final int kIntakeCanId = 20;
 
-  // public static final double kWheelDiameter = Units.inchesToMeters(4.0); // meters
+  // public static final double kWheelDiameter = Units.inchesToMeters(4.0); //
+  // meters
   // public static final double kGearRatio = 1.0 / 12.0; // 12:1 gear ratio
 
   // MEASUREMENTS
@@ -46,9 +47,9 @@ public class Intake extends SubsystemBase {
   public static final double kEncoderVelocityFactor = (kWheelDiameter * Math.PI) / 60.0; // meters per second
 
   // PID tuning
-  public static final double kP  = 1;
-  public static final double kI  = 0;
-  public static final double kD  = 0;
+  public static final double kP = 1;
+  public static final double kI = 0;
+  public static final double kD = 0;
   public static final double kFF = 0;
 
   // ---
@@ -56,28 +57,32 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder m_intakeEncoder;
   private SparkPIDController m_intakePIDController;
 
-  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // private final MutableMeasure<Voltage> m_appliedVoltage =
+  // mutable(Volts.of(0));
   // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  // private final MutableMeasure<Velocity<Distance>> m_velocity =
+  // mutable(MetersPerSecond.of(0));
 
   // SysIdRoutine routine;
 
   public Intake() {
     this.m_intake = new CANSparkMax(kIntakeCanId, MotorType.kBrushless);
 
-    // Factory reset, so we get the SPARK MAX to a known state before configuring them. Useful in case a SPARK MAX is swapped out.
+    // Factory reset, so we get the SPARK MAX to a known state before configuring
+    // them. Useful in case a SPARK MAX is swapped out.
     m_intake.restoreFactoryDefaults();
 
     m_intake.setInverted(true);
 
     m_intakeEncoder = m_intake.getEncoder();
-    
+
     // m_intake.setInverted(true);
 
     setCoast();
     m_intake.setSmartCurrentLimit(50);
 
-    // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
+    // Save the SPARK MAX configurations. If a SPARK MAX browns out during
+    // operation, it will maintain the above configurations.
     m_intake.burnFlash();
 
     m_intakePIDController = m_intake.getPIDController();
@@ -90,7 +95,8 @@ public class Intake extends SubsystemBase {
     m_intakePIDController.setI(kI);
     m_intakePIDController.setD(kD);
     m_intakePIDController.setFF(kFF);
-    // m_intakePIDController.setOutputRange(IntakeConstants.kIntakeMinOutput, IntakeConstants.kIntakeMaxOutput);
+    // m_intakePIDController.setOutputRange(IntakeConstants.kIntakeMinOutput,
+    // IntakeConstants.kIntakeMaxOutput);
     m_intakePIDController.setOutputRange(-1, 1);
 
     setCoast();
@@ -98,33 +104,35 @@ public class Intake extends SubsystemBase {
 
     m_intakePIDController.setSmartMotionMaxAccel(1, 0);
 
-    // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
+    // Save the SPARK MAX configurations. If a SPARK MAX browns out during
+    // operation, it will maintain the above configurations.
     m_intake.burnFlash();
 
     m_intakeEncoder.setPosition(0);
-
 
     setCoast();
 
     // // Creates a SysIdRoutine
     // routine = new SysIdRoutine(
-    //   new SysIdRoutine.Config(),
-    //   new SysIdRoutine.Mechanism(this::voltageIntake, 
-    //       log -> {
-    //       log.motor("intake")
-    //           .voltage(
-    //               m_appliedVoltage.mut_replace(
-    //                 m_intake.get() * RobotController.getBatteryVoltage(), Volts))
-    //           .linearPosition(m_distance.mut_replace(m_intake.getEncoder().getPosition(), Meters))
-    //           .linearVelocity(
-    //               m_velocity.mut_replace(m_intake.getEncoder().getVelocity(), MetersPerSecond));
-    //       },
-    //   this
+    // new SysIdRoutine.Config(),
+    // new SysIdRoutine.Mechanism(this::voltageIntake,
+    // log -> {
+    // log.motor("intake")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // m_intake.get() * RobotController.getBatteryVoltage(), Volts))
+    // .linearPosition(m_distance.mut_replace(m_intake.getEncoder().getPosition(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(m_intake.getEncoder().getVelocity(),
+    // MetersPerSecond));
+    // },
+    // this
     // ));
   }
 
   // private void voltageIntake(Measure<Voltage> volts){
-  //   m_intake.setVoltage(volts.in(Volts));
+  // m_intake.setVoltage(volts.in(Volts));
   // }
 
   /** sets intake idlemode to brake */
@@ -143,7 +151,7 @@ public class Intake extends SubsystemBase {
     // m_intake.set(0);
     m_intakePIDController.setReference(0, CANSparkMax.ControlType.kVelocity);
   }
-  
+
   public double getCurrent() {
     return m_intake.getOutputCurrent();
   }
@@ -157,9 +165,9 @@ public class Intake extends SubsystemBase {
 
     m_intake.set(speed);
 
-    //m_intakePIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    // m_intakePIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
   }
-  
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Intake Encoder Position", m_intakeEncoder.getPosition());
@@ -167,13 +175,13 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Temp", m_intake.getMotorTemperature());
 
     SmartDashboard.putNumber("Intake Current", getCurrent());
-  } 
-  
+  }
+
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return routine.quasistatic(direction);
+  // return routine.quasistatic(direction);
   // }
 
   // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return routine.dynamic(direction);
+  // return routine.dynamic(direction);
   // }
 }

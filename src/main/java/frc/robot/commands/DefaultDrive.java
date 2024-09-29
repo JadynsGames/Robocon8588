@@ -39,8 +39,8 @@ public class DefaultDrive extends Command {
         vy = yRateLimiter.calculate(vy);
         vw = wRateLimiter.calculate(vw);
         
-        // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, vw, Rotation2d.fromDegrees(-m_Swerb.getYaw()));
-        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, vw);
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, vw, Rotation2d.fromDegrees(-m_Swerb.getYaw()));
+        //ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, vw);
         m_Swerb.drive(speeds);
     }
     

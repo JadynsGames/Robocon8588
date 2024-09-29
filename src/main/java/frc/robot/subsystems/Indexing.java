@@ -48,9 +48,11 @@ public class Indexing extends SubsystemBase {
 
   double beamBreakThreshold = 10.0; // idk what unit
 
-  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // private final MutableMeasure<Voltage> m_appliedVoltage =
+  // mutable(Volts.of(0));
   // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  // private final MutableMeasure<Velocity<Distance>> m_velocity =
+  // mutable(MetersPerSecond.of(0));
 
   // SysIdRoutine routine;
 
@@ -60,8 +62,9 @@ public class Indexing extends SubsystemBase {
 
     // m_beamBreakBottom = new AnalogInput(0);
     // m_beamBreakTop = new AnalogInput(1);
-    
-    // Factory reset, so we get the SPARKS MAX to a known state before configuring them. Useful in case a SPARK MAX is swapped out.
+
+    // Factory reset, so we get the SPARKS MAX to a known state before configuring
+    // them. Useful in case a SPARK MAX is swapped out.
     m_left.restoreFactoryDefaults();
     m_right.restoreFactoryDefaults();
 
@@ -76,36 +79,38 @@ public class Indexing extends SubsystemBase {
     m_left.setSmartCurrentLimit(50);
     m_right.setSmartCurrentLimit(50);
 
-    // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
+    // Save the SPARK MAX configurations. If a SPARK MAX browns out during
+    // operation, it will maintain the above configurations.
     m_left.burnFlash();
     m_right.burnFlash();
 
     m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);   
-    
+    m_rightEncoder.setPosition(0);
+
     // Additional initialization stuff here if needed
     setCoast();
-    
+
     // // Creates a SysIdRoutine
     // routine = new SysIdRoutine(
-    //   new SysIdRoutine.Config(),
-    //   new SysIdRoutine.Mechanism(this::voltageIndexing, 
-    //       log -> {
-    //       log.motor("indexing")
-    //           .voltage(
-    //               m_appliedVoltage.mut_replace(
-    //                 m_left.get() * RobotController.getBatteryVoltage(), Volts))
-    //           .linearPosition(m_distance.mut_replace(m_left.getEncoder().getPosition(), Meters))
-    //           .linearVelocity(
-    //               m_velocity.mut_replace(m_left.getEncoder().getVelocity(), MetersPerSecond));
-    //       },
-    //   this
+    // new SysIdRoutine.Config(),
+    // new SysIdRoutine.Mechanism(this::voltageIndexing,
+    // log -> {
+    // log.motor("indexing")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // m_left.get() * RobotController.getBatteryVoltage(), Volts))
+    // .linearPosition(m_distance.mut_replace(m_left.getEncoder().getPosition(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(m_left.getEncoder().getVelocity(), MetersPerSecond));
+    // },
+    // this
     // ));
   }
 
   // private void voltageIndexing(Measure<Voltage> volts){
-  //   m_left.setVoltage(volts.in(Volts));
-  //   m_right.setVoltage(-volts.in(Volts));
+  // m_left.setVoltage(volts.in(Volts));
+  // m_right.setVoltage(-volts.in(Volts));
   // }
 
   public double getCurrent() {
@@ -142,10 +147,10 @@ public class Indexing extends SubsystemBase {
     SmartDashboard.putString("State", loaded ? "loaded" : "empty");
     return loaded;
   }
-  
+
   public void stop() {
     SmartDashboard.putString("Indexing State", "stopped");
-    
+
     // m_right.set(0);
     // m_left.set(0);
 
@@ -154,11 +159,11 @@ public class Indexing extends SubsystemBase {
   }
 
   // public boolean isTopSensorSensing() {
-  //   return m_beamBreakTop.getVoltage() > beamBreakThreshold;
+  // return m_beamBreakTop.getVoltage() > beamBreakThreshold;
   // }
-  
+
   // public boolean isBottomSensorSensing() {
-  //   return m_beamBreakBottom.getVoltage() > beamBreakThreshold;
+  // return m_beamBreakBottom.getVoltage() > beamBreakThreshold;
   // }
 
   public void periodic() {
@@ -172,18 +177,22 @@ public class Indexing extends SubsystemBase {
 
     SmartDashboard.putNumber("Indexing Current", getCurrent());
 
-    // SmartDashboard.putNumber("Bottom Photosensor Voltage", m_beamBreakBottom.getVoltage());
-    // SmartDashboard.putBoolean("Bottom Photosensor Detected", m_beamBreakBottom.getVoltage() > beamBreakThreshold);
+    // SmartDashboard.putNumber("Bottom Photosensor Voltage",
+    // m_beamBreakBottom.getVoltage());
+    // SmartDashboard.putBoolean("Bottom Photosensor Detected",
+    // m_beamBreakBottom.getVoltage() > beamBreakThreshold);
 
-    // SmartDashboard.putNumber("Top Photosensor Voltage", m_beamBreakTop.getVoltage());
-    // SmartDashboard.putBoolean("Top Photosensor Detected", m_beamBreakTop.getVoltage() > beamBreakThreshold);
+    // SmartDashboard.putNumber("Top Photosensor Voltage",
+    // m_beamBreakTop.getVoltage());
+    // SmartDashboard.putBoolean("Top Photosensor Detected",
+    // m_beamBreakTop.getVoltage() > beamBreakThreshold);
   }
 
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return routine.quasistatic(direction);
+  // return routine.quasistatic(direction);
   // }
 
   // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return routine.dynamic(direction);
+  // return routine.dynamic(direction);
   // }
 }

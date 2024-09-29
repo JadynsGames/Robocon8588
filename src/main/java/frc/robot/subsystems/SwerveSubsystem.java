@@ -14,22 +14,21 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import com.kauailabs.navx.frc.AHRS;
 
 public class SwerveSubsystem extends SubsystemBase {
-
   SwerveModule m_frontLeftModule = new SwerveModule(
-    DriveConstants.kFrontLeftTurningID, DriveConstants.kFrontLeftDrivingID, 
-    DriveConstants.kFrontLeftAngularOffset, DriveConstants.kFrontLeftLocation);
+      DriveConstants.kFrontLeftTurningID, DriveConstants.kFrontLeftDrivingID,
+      DriveConstants.kFrontLeftAngularOffset, DriveConstants.kFrontLeftLocation);
 
   SwerveModule m_frontRightModule = new SwerveModule(
-    DriveConstants.kFrontRightTurningID, DriveConstants.kFrontRightDrivingID, 
-    DriveConstants.kFrontRightAngularOffset, DriveConstants.kFrontRightLocation);
+      DriveConstants.kFrontRightTurningID, DriveConstants.kFrontRightDrivingID,
+      DriveConstants.kFrontRightAngularOffset, DriveConstants.kFrontRightLocation);
 
   SwerveModule m_backRightModule = new SwerveModule(
-    DriveConstants.kBackRightTurningID, DriveConstants.kBackRightDrivingID, 
-    DriveConstants.kBackRightAngularOffset, DriveConstants.kBackRightLocation);
+      DriveConstants.kBackRightTurningID, DriveConstants.kBackRightDrivingID,
+      DriveConstants.kBackRightAngularOffset, DriveConstants.kBackRightLocation);
 
   SwerveModule m_backLeftModule = new SwerveModule(
-    DriveConstants.kBackLeftTurningID, DriveConstants.kBackLeftDrivingID, 
-    DriveConstants.kBackLeftAngularOffset, DriveConstants.kBackLeftLocation);
+      DriveConstants.kBackLeftTurningID, DriveConstants.kBackLeftDrivingID,
+      DriveConstants.kBackLeftAngularOffset, DriveConstants.kBackLeftLocation);
 
   SwerveDriveKinematics m_DriveKinematics = new SwerveDriveKinematics(
       m_frontLeftModule.m_moduleLocation, m_frontRightModule.m_moduleLocation,
@@ -39,7 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
-      
+
   }
 
   public double getYaw() {

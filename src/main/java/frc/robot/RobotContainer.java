@@ -22,24 +22,25 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup; // Parallel command group
 import edu.wpi.first.wpilibj2.command.WaitCommand; // Wait command
 
-
 /**
  * The RobotContainer class is responsible for declaring the robot's subsystems,
  * commands, and configuring the input bindings for the controller.
  */
 public class RobotContainer {
-  // Define robot subsystems as public static final to allow access throughout the class
- public static final SwerveSubsystem m_Swerb = new SwerveSubsystem();
+  // Define robot subsystems as public static final to allow access throughout the
+  // class
+  public static final SwerveSubsystem m_Swerb = new SwerveSubsystem();
   public static final Intake intake = new Intake();
   public static final Indexing indexing = new Indexing();
   public static final Shooter shooter = new Shooter();
   public static final Wrist wrist = new Wrist();
   public static final AutonCommand m_autonCommand = new AutonCommand(m_Swerb, intake, indexing, shooter, wrist);
 
-  // Create an Xbox controller instance to handle driver input (0 is the port number)
+  // Create an Xbox controller instance to handle driver input (0 is the port
+  // number)
   public static CommandXboxController driverController = new CommandXboxController(0);
 
-  /** 
+  /**
    * Constructor for RobotContainer. This is called when the robot is initialized.
    * It sets up the command bindings for the robot's controls.
    */
@@ -49,121 +50,123 @@ public class RobotContainer {
   }
 
   /**
-   * This method maps controller inputs to commands that control the robot's subsystems.
+   * This method maps controller inputs to commands that control the robot's
+   * subsystems.
    * It defines the behavior for each button press and its associated actions.
    */
   private void configureBindings() {
     // Set the default command for the swerve drive subsystem
     m_Swerb.setDefaultCommand(new DefaultDrive());
 
-    // Configure the dpad Up button to reset the robot's yaw (orientation)
-        
+    // Configure the x button button to reset the robot's yaw (orientation)
+
     driverController.x().onTrue(new InstantCommand(() -> m_Swerb.zeroYaw())); // Resets the yaw when D-Pad Up is pressed
+    driverController.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Yaw", true)));
 
+    
     // Intake control: when left bumper is pressed
-    driverController.leftBumper() 
-      .whileTrue(new StartEndCommand(
-        () -> {
-          intake.set(1); // Sets intake motor to full forward (1.0)
-          indexing.set(1); // Sets indexing motor to full forward (1.0)
-        }, 
-        () -> {
-          intake.set(0); // Stops the intake motor (0)
-          indexing.set(0); // Stops the indexing motor (0)
-        },
-        intake, indexing // Specifies the subsystems to be affected
-      ));
-
-    // Creating a StartEndCommand that starts the shooter and stops it when the button is releas
-
-      // Shooting control: when right bumper is pressed
-      driverController.rightBumper().whileTrue(new ParallelCommandGroup(
-        new StartEndCommand(
-          () -> {
-            shooter.set(-1); // starts the shooter
-          },
-          () -> {
-            shooter.set(0); // stops the shooter
-          },
-          shooter),
-          new WaitCommand(1.5).andThen(
-            new StartEndCommand(
-            ()-> {
-              //shooter.set(-1); // continues shooting
-              indexing.set(1); // starts the indexing
+    driverController.leftBumper()
+        .whileTrue(new StartEndCommand(
+            () -> {
+              intake.set(1); // Sets intake motor to full forward (1.0)
+              indexing.set(1); // Sets indexing motor to full forward (1.0)
             },
             () -> {
-              //shooter.set(0); // stops the shooter
-              indexing.set(0); // stops the indexing
+              intake.set(0); // Stops the intake motor (0)
+              indexing.set(0); // Stops the indexing motor (0)
             },
-             indexing).withTimeout(1) // retain maximum power
-          )
-          ));
-  
-    
+            intake, indexing // Specifies the subsystems to be affected
+        ));
+
+    // Creating a StartEndCommand that starts the shooter and stops it when the
+    // button is releas
+
+    // Shooting control: when right bumper is pressed
+    driverController.rightBumper().whileTrue(new ParallelCommandGroup(
+        new StartEndCommand(
+            () -> {
+              shooter.set(-1); // starts the shooter
+            },
+            () -> {
+              shooter.set(0); // stops the shooter
+            },
+            shooter),
+        new WaitCommand(1.5).andThen(
+            new StartEndCommand(
+                () -> {
+                  // shooter.set(-1); // continues shooting
+                  indexing.set(1); // starts the indexing
+                },
+                () -> {
+                  // shooter.set(0); // stops the shooter
+                  indexing.set(0); // stops the indexing
+                },
+                indexing).withTimeout(1) // retain maximum power
+        )));
+
     driverController.a()
-      .whileTrue(new StartEndCommand(
-        () -> {
-          // velocity x, velocity y, radians per second (it turns pi radians per second for one second, theoretically turning it 180 degrees)
-          m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, Math.PI))).withTimeout(1);
-        },
-        () -> {
-          m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, 0))).withTimeout(0);
-        }
-       ));
-    
-    driverController.y() 
-      .whileTrue(new StartEndCommand(
-        () -> {
-          shooter.set(.7); // Sets shooter motor to moderate forward (0.4)
-          indexing.set(-.6); // Sets indexing motor to moderate reverse (-0.6)
-        },
-        () -> {
-          shooter.set(0); // Stops the shooter motor (0)
-          indexing.set(0); // Stops the indexing motor (0)
-        }, 
-        shooter, indexing // Specifies the subsystems to be affected
-      ));
+        .whileTrue(new StartEndCommand(
+            () -> {
+              // velocity x, velocity y, radians per second (it turns pi radians per second
+              // for one second, theoretically turning it 180 degrees)
+              m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, Math.PI))).withTimeout(1);
+            },
+            () -> {
+              m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, 0))).withTimeout(0);
+            }));
+
+    driverController.y()
+        .whileTrue(new StartEndCommand(
+            () -> {
+              shooter.set(.7); // Sets shooter motor to moderate forward (0.4)
+              indexing.set(-.6); // Sets indexing motor to moderate reverse (-0.6)
+            },
+            () -> {
+              shooter.set(0); // Stops the shooter motor (0)
+              indexing.set(0); // Stops the indexing motor (0)
+            },
+            shooter, indexing // Specifies the subsystems to be affected
+        ));
 
     // The 0.2 is the threshold / deadzone for the trigger
-    // driverController.rightTrigger(0.2).whileTrue(new InstantCommand(() -> {
-    //   wrist.wristUp(0.15);
-    // }));
+    driverController.rightTrigger(0.2).whileTrue(new InstantCommand(() -> {
+      wrist.wristUp(0.15);
+    })).whileFalse(new InstantCommand(() -> {
+      wrist.wristUp(0);
+    }));
 
-    // driverController.leftTrigger(0.2).whileTrue(new InstantCommand(() -> {
-    //   wrist.wristDown(0.15);
-    // }));
+    driverController.leftTrigger(0.2).whileTrue(new InstantCommand(() -> {
+      wrist.wristDown(0.15);
+    })).whileFalse(new InstantCommand(() -> {
+      wrist.wristDown(0);
+    }));
 
-
-    
     // Wind-up shooting mechanism: when X button is held
-    // driverController.x() 
-    //   .whileTrue(new StartEndCommand(
-    //     () -> {
-    //       shooter.set(-1); // Sets shooter motor to full reverse (-1.0)
-    //     },
-    //     () -> {
-    //       shooter.set(0); // Stops the shooter motor (0)
-    //     }, 
-    //     shooter // Specifies the shooter subsystem
-    //   ));
-    
+    // driverController.x()
+    // .whileTrue(new StartEndCommand(
+    // () -> {
+    // shooter.set(-1); // Sets shooter motor to full reverse (-1.0)
+    // },
+    // () -> {
+    // shooter.set(0); // Stops the shooter motor (0)
+    // },
+    // shooter // Specifies the shooter subsystem
+    // ));
 
-    
     // Uncommented stop all command (can be used to stop everything)
-    // driverController.leftBumper() 
-    //   .onTrue(new InstantCommand(() -> {
-    //     intake.set(0); // Stops the intake motor
-    //     indexing.set(0); // Stops the indexing motor
-    //     shooter.set(0); // Stops the shooter motor
-    //   }, intake, indexing, shooter));
+    // driverController.leftBumper()
+    // .onTrue(new InstantCommand(() -> {
+    // intake.set(0); // Stops the intake motor
+    // indexing.set(0); // Stops the indexing motor
+    // shooter.set(0); // Stops the shooter motor
+    // }, intake, indexing, shooter));
 
     // Uncommented wrist controls for aiming
     // driverController.leftBumper().onTrue(
-    //   wrist.incrementUp() // Increments the wrist position up
+    // wrist.incrementUp() // Increments the wrist position up
     // );
     // driverController.rightBumper().onTrue(
-    //   wrist.incrementDown() // Increments the wrist position down
+    // wrist.incrementDown() // Increments the wrist position down
     // );
   }
 

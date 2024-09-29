@@ -26,12 +26,13 @@ public class SwerveModule {
     private final SparkPIDController m_turningPidController;
 
     private double m_chassisAngularOffset;
-    
+
     public final Translation2d m_moduleLocation;
 
     private SwerveModuleState m_targetState = new SwerveModuleState(0.0, new Rotation2d());
 
-    public SwerveModule(int kTurningCanID, int kDrivingCanID, double chassisAngularOffset, Translation2d m_moduleLocation) {
+    public SwerveModule(int kTurningCanID, int kDrivingCanID, double chassisAngularOffset,
+            Translation2d m_moduleLocation) {
         m_turningSparkMax = new CANSparkMax(kTurningCanID, MotorType.kBrushless);
         m_drivingSparkMax = new CANSparkMax(kDrivingCanID, MotorType.kBrushless);
 
@@ -47,7 +48,7 @@ public class SwerveModule {
 
         m_drivingEncoder.setPositionConversionFactor(Constants.DriveConstants.kDrivePositionConversionFactor);
         m_drivingEncoder.setVelocityConversionFactor(Constants.DriveConstants.kDriveVelocityConversionFactor);
-        
+
         m_turningEncoder.setPositionConversionFactor(Constants.DriveConstants.kAnglePositionConversionFactor);
         m_turningEncoder.setVelocityConversionFactor(Constants.DriveConstants.kAngleVelocityConversionFactor);
 
@@ -57,15 +58,17 @@ public class SwerveModule {
         m_turningEncoder.setInverted(true);
 
         m_turningPidController.setPositionPIDWrappingEnabled(true);
-        m_turningPidController.setPositionPIDWrappingMinInput(Constants.DriveConstants.kTurningEncoderPositionPIDMinInput);
-        m_turningPidController.setPositionPIDWrappingMaxInput(Constants.DriveConstants.kTurningEncoderPositionPIDMaxInput);
-        
+        m_turningPidController
+                .setPositionPIDWrappingMinInput(Constants.DriveConstants.kTurningEncoderPositionPIDMinInput);
+        m_turningPidController
+                .setPositionPIDWrappingMaxInput(Constants.DriveConstants.kTurningEncoderPositionPIDMaxInput);
+
         m_drivingPidController.setP(Constants.DriveConstants.kDrivingP);
         m_drivingPidController.setI(Constants.DriveConstants.kDrivingI);
         m_drivingPidController.setD(Constants.DriveConstants.kDrivingD);
         m_drivingPidController.setFF(Constants.DriveConstants.kDrivingFF);
         m_drivingPidController.setOutputRange(-1, 1);
-        
+
         m_turningPidController.setP(Constants.DriveConstants.kTurningP);
         m_turningPidController.setI(Constants.DriveConstants.kTurningI);
         m_turningPidController.setD(Constants.DriveConstants.kTurningD);
@@ -86,11 +89,13 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_drivingEncoder.getVelocity(), new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
+        return new SwerveModuleState(m_drivingEncoder.getVelocity(),
+                new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(m_drivingEncoder.getPosition(), new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
+        return new SwerveModulePosition(m_drivingEncoder.getPosition(),
+                new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
@@ -98,10 +103,13 @@ public class SwerveModule {
         correctedState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
         correctedState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
-        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState, new Rotation2d(m_turningEncoder.getPosition()));
+        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(correctedState,
+                new Rotation2d(m_turningEncoder.getPosition()));
 
-        m_drivingPidController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
-        m_turningPidController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+        m_drivingPidController.setReference(optimizedDesiredState.speedMetersPerSecond,
+                CANSparkMax.ControlType.kVelocity);
+        m_turningPidController.setReference(optimizedDesiredState.angle.getRadians(),
+                CANSparkMax.ControlType.kPosition);
 
         m_targetState = desiredState;
     }

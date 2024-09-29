@@ -34,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class Wrist extends TrapezoidProfileSubsystem {
   private final CANSparkMax m_motor;
   private final AbsoluteEncoder m_encoder;
-  private final SparkPIDController m_pidController; 
+  private final SparkPIDController m_pidController;
 
   // CAN IDs
   static final int kArmCanId = 23;
@@ -42,7 +42,8 @@ public class Wrist extends TrapezoidProfileSubsystem {
   // THROUGHBORE ENCODER
   static final int kCountsPerRev = 8192;
 
-  // These are fake gains; in actuality these must be determined individually for each robot
+  // These are fake gains; in actuality these must be determined individually for
+  // each robot
   static final double kSVolts = 1;
   static final double kGVolts = 1;
   static final double kVVoltSecondPerRad = 0.5;
@@ -54,22 +55,23 @@ public class Wrist extends TrapezoidProfileSubsystem {
   // The offset of the arm from the horizontal in its neutral position,
   // measured from the horizontal
   static final double kWristOffsetRads = 0.5;
-    
+
   // ------
 
   private final double defaultPosition = Math.PI / 6; // radians
-  private       double currentPosition = Math.PI / 6; // radians
+  private double currentPosition = Math.PI / 6; // radians
 
-  private final ArmFeedforward m_feedforward =
-      new ArmFeedforward(
-          kSVolts, kGVolts,
-          kVVoltSecondPerRad, kAVoltSecondSquaredPerRad);
- 
+  private final ArmFeedforward m_feedforward = new ArmFeedforward(
+      kSVolts, kGVolts,
+      kVVoltSecondPerRad, kAVoltSecondSquaredPerRad);
+
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  // Mutable holder for unit-safe linear distance values, persisted to avoid
+  // reallocation.
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid
+  // reallocation.
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
   SysIdRoutine routine;
@@ -78,14 +80,16 @@ public class Wrist extends TrapezoidProfileSubsystem {
 
   /** Create a new Wrist. */
   public Wrist() {
-    super(new TrapezoidProfile.Constraints(kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared), kWristOffsetRads);
-    
+    super(new TrapezoidProfile.Constraints(kMaxVelocityRadPerSecond, kMaxAccelerationRadPerSecSquared),
+        kWristOffsetRads);
+
     m_motor = new CANSparkMax(kArmCanId, MotorType.kBrushless);
 
-    // Factory reset, so we get the SPARK MAX to a known state before configuring them. Useful in case a SPARK MAX is swapped out.
+    // Factory reset, so we get the SPARK MAX to a known state before configuring
+    // them. Useful in case a SPARK MAX is swapped out.
     m_motor.restoreFactoryDefaults();
 
-    m_encoder = m_motor.getAbsoluteEncoder(); 
+    m_encoder = m_motor.getAbsoluteEncoder();
     m_pidController = m_motor.getPIDController();
 
     // m_encoder.setPositionConversionFactor(2*Math.PI);
@@ -96,7 +100,8 @@ public class Wrist extends TrapezoidProfileSubsystem {
 
     // m_motor.setSmartCurrentLimit(MotorContants.kMotorCurrentLimit);
 
-    // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
+    // Save the SPARK MAX configurations. If a SPARK MAX browns out during
+    // operation, it will maintain the above configurations.
     m_motor.burnFlash();
 
     // m_encoder.setPosition(0);
@@ -104,7 +109,7 @@ public class Wrist extends TrapezoidProfileSubsystem {
     m_pidController.setP(.01, 0);
     m_pidController.setI(0, 0);
     m_pidController.setD(0, 0);
-    
+
     m_pidController.setFeedbackDevice(m_encoder);
 
     m_motor.setSmartCurrentLimit(30);
@@ -123,9 +128,8 @@ public class Wrist extends TrapezoidProfileSubsystem {
                   .linearPosition(m_distance.mut_replace(m_encoder.getPosition(), Meters))
                   .linearVelocity(
                       m_velocity.mut_replace(m_encoder.getVelocity(), MetersPerSecond));
-              },
-          this
-        ));
+            },
+            this));
   }
 
   private void voltageAim(Measure<Voltage> volts) {
@@ -136,7 +140,7 @@ public class Wrist extends TrapezoidProfileSubsystem {
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
     double feedforward = m_feedforward.calculate(setpoint.position, setpoint.velocity);
-        
+
     // Set the setpoint for the PID controller
     m_pidController.setReference(setpoint.position, CANSparkBase.ControlType.kPosition, 0, feedforward / 12.0);
   }
@@ -146,17 +150,17 @@ public class Wrist extends TrapezoidProfileSubsystem {
     currentPosition = kWristOffsetRads;
     return Commands.runOnce(() -> setSafeGoal(currentPosition), this);
   }
-  
+
   public Command setWristGoalDefaultCommand() {
     currentPosition = defaultPosition;
     return Commands.runOnce(() -> setSafeGoal(currentPosition), this);
   }
-  
+
   public Command incrementUp() {
     currentPosition += Units.degreesToRadians(1);
     return Commands.runOnce(() -> setSafeGoal(currentPosition), this);
   }
-  
+
   public Command incrementDown() {
     currentPosition -= Units.degreesToRadians(1);
     return Commands.runOnce(() -> setSafeGoal(currentPosition), this);
@@ -172,20 +176,21 @@ public class Wrist extends TrapezoidProfileSubsystem {
 
   /** @param angle in radians */
   public void setSafeGoal(double angle) {
-    if (angle < 0 || angle > Units.rotationsToRadians(0.0966)) angle = Math.PI / 6; // set safe if out of bounds
+    if (angle < 0 || angle > Units.rotationsToRadians(0.0966))
+      angle = Math.PI / 6; // set safe if out of bounds
     setGoal(Units.radiansToRotations(angle));
     SmartDashboard.putNumber("Wrist angle", angle);
   }
 
   // /**
-  //  * corrects angle
-  //  * @return corrected angle in degrees
-  //  */
+  // * corrects angle
+  // * @return corrected angle in degrees
+  // */
   // public double getAngle() {
-  //   double angle = m_encoder.getPosition();
-  //   if (angle < threshold) angle += 1.0;
-  //   angle *= 360;
-  //   return 90 - angle;
+  // double angle = m_encoder.getPosition();
+  // if (angle < threshold) angle += 1.0;
+  // angle *= 360;
+  // return 90 - angle;
   // }
 
   @Override
@@ -195,7 +200,7 @@ public class Wrist extends TrapezoidProfileSubsystem {
     // SmartDashboard.putNumber("Wrist Encoder Velocity", m_encoder.getVelocity());
     SmartDashboard.putNumber("Wrist Temp", m_motor.getMotorTemperature());
   }
-  
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return routine.quasistatic(direction);
   }
