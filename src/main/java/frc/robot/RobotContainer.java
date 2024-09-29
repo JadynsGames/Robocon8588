@@ -76,31 +76,6 @@ public class RobotContainer {
 
     // Creating a StartEndCommand that starts the shooter and stops it when the button is releas
 
-    
-      // (new StartEndCommand(
-      //   () -> {
-      //     shooter.set(-1); // starts the shooter
-      //   },
-      //   () -> {
-      //     shooter.set(0); // stops the shooter
-      //   },
-      //   shooter
-      // ).andThen(
-      //   new WaitCommand(3)
-      // ).andThen(
-      //   new StartEndCommand(
-      //     ()-> {
-      //       shooter.set(-1); // continues shooting
-      //       indexing.set(0.6); // starts the indexing
-      //     },
-      //     () -> {
-      //       shooter.set(0); // stops the shooter
-      //       indexing.set(0); // stops the indexing
-      //     },
-      //     shooter, indexing
-      //   )
-      // )
-
       // Shooting control: when right bumper is pressed
       driverController.rightBumper().whileTrue(new ParallelCommandGroup(
         new StartEndCommand(
@@ -111,34 +86,20 @@ public class RobotContainer {
             shooter.set(0); // stops the shooter
           },
           shooter),
-          new WaitCommand(2.7).andThen(
+          new WaitCommand(1.5).andThen(
             new StartEndCommand(
             ()-> {
-              shooter.set(-1); // continues shooting
-              indexing.set(0.6); // starts the indexing
+              //shooter.set(-1); // continues shooting
+              indexing.set(1); // starts the indexing
             },
             () -> {
-              shooter.set(0); // stops the shooter
+              //shooter.set(0); // stops the shooter
               indexing.set(0); // stops the indexing
             },
-            shooter, indexing).withTimeout(1); // retain maximum power
+             indexing).withTimeout(1) // retain maximum power
           )
           ));
-
-
-    // Wind-up shooting mechanism: when X button is held
-    // driverController.x() 
-    //   .whileTrue(new StartEndCommand(
-    //     () -> {
-    //       shooter.set(-1); // Sets shooter motor to full reverse (-1.0)
-    //     },
-    //     () -> {
-    //       shooter.set(0); // Stops the shooter motor (0)
-    //     }, 
-    //     shooter // Specifies the shooter subsystem
-    //   ));
-    
-    // Shooter intake (top load) control: when Y button is held (this is separate from the yaw reset)
+  
     
     driverController.a()
       .whileTrue(new StartEndCommand(
@@ -154,7 +115,7 @@ public class RobotContainer {
     driverController.y() 
       .whileTrue(new StartEndCommand(
         () -> {
-          shooter.set(.4); // Sets shooter motor to moderate forward (0.4)
+          shooter.set(.7); // Sets shooter motor to moderate forward (0.4)
           indexing.set(-.6); // Sets indexing motor to moderate reverse (-0.6)
         },
         () -> {
@@ -164,21 +125,29 @@ public class RobotContainer {
         shooter, indexing // Specifies the subsystems to be affected
       ));
 
-      
     // The 0.2 is the threshold / deadzone for the trigger
-    driverController.leftTrigger(0.2).onTrue(new Command() {
-      public void initialize() {
-        wrist.wristDown(driverController.getLeftTriggerAxis());
-      }
-    });
+    // driverController.rightTrigger(0.2).whileTrue(new InstantCommand(() -> {
+    //   wrist.wristUp(0.15);
+    // }));
+
+    // driverController.leftTrigger(0.2).whileTrue(new InstantCommand(() -> {
+    //   wrist.wristDown(0.15);
+    // }));
+
 
     
-
-    driverController.rightTrigger(0.2).onTrue(new Command() {
-      public void initialize() {
-        wrist.wristUp(driverController.getRightTriggerAxis());
-      }
-    });
+    // Wind-up shooting mechanism: when X button is held
+    // driverController.x() 
+    //   .whileTrue(new StartEndCommand(
+    //     () -> {
+    //       shooter.set(-1); // Sets shooter motor to full reverse (-1.0)
+    //     },
+    //     () -> {
+    //       shooter.set(0); // Stops the shooter motor (0)
+    //     }, 
+    //     shooter // Specifies the shooter subsystem
+    //   ));
+    
 
     
     // Uncommented stop all command (can be used to stop everything)

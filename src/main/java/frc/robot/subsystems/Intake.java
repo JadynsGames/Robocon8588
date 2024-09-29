@@ -155,9 +155,9 @@ public class Intake extends SubsystemBase {
   public void set(double speed) {
     SmartDashboard.putNumber("Intake Speed", speed);
 
-    // m_intake.set(speed);
+    m_intake.set(speed);
 
-    m_intakePIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    //m_intakePIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
   }
   
   @Override

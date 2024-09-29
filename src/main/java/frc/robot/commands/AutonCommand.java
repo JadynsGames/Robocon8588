@@ -26,8 +26,8 @@ public class AutonCommand extends SequentialCommandGroup {
     ) {
         addRequirements(driveSubsystem);
 
-        final double velocityX = 0;
-        final double velocityY = 0.25;
+        final double velocityX = -0.4;
+        final double velocityY = 0;
         // Angular Velocity
         final double omegaRadiansPerSecond = 0;
 
@@ -39,9 +39,46 @@ public class AutonCommand extends SequentialCommandGroup {
                  indexing.stop();
              })
              ),
-
-             driveSubsystem.run(() -> driveSubsystem.drive(new ChassisSpeeds(velocityX, velocityY, omegaRadiansPerSecond))).withTimeout(5)
+             new WaitCommand(10).andThen(
+                driveSubsystem.run(() -> driveSubsystem.drive(new ChassisSpeeds(velocityX, velocityY, omegaRadiansPerSecond))).withTimeout(5)
+                )             
             );
+
+        /*addCommands(
+            // Make sure everything is stopped
+             new ParallelCommandGroup(
+                 Commands.runOnce(()->{
+                 intake.stop();
+                 indexing.stop();
+             })
+             ),
+
+             driveSubsystem.run(() -> driveSubsystem.drive(new ChassisSpeeds(velocityX, velocityY, omegaRadiansPerSecond))).withTimeout(4.7),
+
+             new WaitCommand(0.5).andThen(new ParallelCommandGroup(
+                new StartEndCommand(
+                () -> {
+                    shooter.set(-1); // starts the shooter
+                },
+                () -> {
+                    shooter.set(0); // stops the shooter
+                },
+                shooter),
+                new WaitCommand(1.5).andThen(
+                    new StartEndCommand(
+                    ()-> {
+                    //shooter.set(-1); // continues shooting
+                    indexing.set(1); // starts the indexing
+                    },
+                    () -> {
+                    //shooter.set(0); // stops the shooter
+                    indexing.set(0); // stops the indexing
+                    },
+                    indexing).withTimeout(1) // retain maximum power
+                )
+          );
+        ));*/
+
     }
 
 }
