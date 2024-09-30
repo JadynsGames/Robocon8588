@@ -15,7 +15,8 @@ RB = shoot<br>
 LB = floor intake<br>
 Y = top load<br>
 X = set swerve yaw to 0<br>
-A = 180 flip<br>
+A = Move the indexer up slowly<br>
+B = Floor outtake<br>
 
 <h2>Useful Links</h2>
 <ul>

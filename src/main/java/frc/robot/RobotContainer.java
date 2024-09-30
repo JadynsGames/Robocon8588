@@ -63,7 +63,6 @@ public class RobotContainer {
     driverController.x().onTrue(new InstantCommand(() -> m_Swerb.zeroYaw())); // Resets the yaw when D-Pad Up is pressed
     driverController.x().onTrue(new InstantCommand(() -> SmartDashboard.putBoolean("Reset Yaw", true)));
 
-    
     // Intake control: when left bumper is pressed
     driverController.leftBumper()
         .whileTrue(new StartEndCommand(
@@ -104,17 +103,27 @@ public class RobotContainer {
                 indexing).withTimeout(1) // retain maximum power
         )));
 
+    // Moving the indexer up slowly to fine tune the shot
     driverController.a()
         .whileTrue(new StartEndCommand(
             () -> {
-              // velocity x, velocity y, radians per second (it turns pi radians per second
-              // for one second, theoretically turning it 180 degrees)
-              m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, Math.PI))).withTimeout(1);
+              indexing.set(0.2);
             },
             () -> {
-              m_Swerb.run(() -> m_Swerb.drive(new ChassisSpeeds(0, 0, 0))).withTimeout(0);
+              indexing.set(0);
             }));
 
+    // Floor outtake
+    driverController.b()
+        .whileTrue(new StartEndCommand(
+            () -> {
+              intake.set(-0.8);
+            },
+            () -> {
+              intake.set(0);
+            }));
+
+    // Front intake
     driverController.y()
         .whileTrue(new StartEndCommand(
             () -> {
